@@ -1,10 +1,10 @@
 rm(list=ls())
-fam=read.csv("/Users/dannem/Desktop/fam_IO_obj_test.csv")
+fam=read.csv("/Users/dannem/Dropbox/Data/IO_statistics/fam_IO_obj_test.csv")
 fam_all <- fam[,1:4]
 fam_L <- fam[,5:8]
 summary(fam_all)
 summary(fam_L)
-unf=read.csv("/Users/dannem/Desktop/unf_IO_obj_test.csv")
+unf=read.csv("/Users/dannem/Dropbox/Data/IO_statistics/unf_IO_obj_test.csv")
 summary(unf)
 unf_all <- unf[,1:4]
 unf_L <- unf[,5:8]
