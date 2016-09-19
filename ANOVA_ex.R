@@ -1,135 +1,119 @@
-#Read in the ANT data (see ?ANT).
-data(ANT)
-head(ANT)
-ezPrecis(ANT)
-
-## Not run:
-#Run an ANOVA on the mean correct RT data.
-mean_rt_anova = ezANOVA(
-  data = ANT[ANT$error==0,]
-  , dv = .(rt)
-  , wid = .(subnum)
-  , within = .(cue,flank)
-  , between = .(group)
-)
-#Show the ANOVA and assumption tests.
-print(mean_rt_anova)
-
-#Plot the main effect of group.
-group_plot = ezPlot(
-  data = ANT[ANT$error==0,]
-  , dv = .(rt)
-  , wid = .(subnum)
-  , between = .(group)
-  , x = .(group)
-  , do_lines = FALSE
-  , x_lab = 'Group'
-  , y_lab = 'RT (ms)'
-)
-#Show the plot.
-print(group_plot)
+rm(list=ls())
+fam=read.csv("/Users/dannem/Desktop/fam_IO_obj_test.csv")
+fam_all <- fam[,1:4]
+fam_L <- fam[,5:8]
+summary(fam_all)
+summary(fam_L)
+unf=read.csv("/Users/dannem/Desktop/unf_IO_obj_test.csv")
+summary(unf)
+unf_all <- unf[,1:4]
+unf_L <- unf[,5:8]
+summary(unf_all)
+summary(unf_L)
+fam_all$subnum <- 1:nrow(fam_all)
+fam_L$subnum <- 1:nrow(fam_L)
+unf_all$subnum <- 1:nrow(unf_all)
+unf_L$subnum <- 1:nrow(unf_L)
 
 
-group_plot = group_plot +theme(
-   panel.grid.major = element_blank()
-  , panel.grid.minor = element_blank()
-  )
-  print(group_plot)
-  
-  
-  group_plot_data = ezPlot(
-    data = ANT[ANT$error==0,]
-    , dv = .(rt)
-    , wid = .(subnum)
-    , between = .(group)
-    , x = .(group)
-    , do_lines = FALSE
-    , x_lab = 'Group'
-    , y_lab = 'RT (ms)'
-    , print_code = TRUE
-  )
-  
-  #Re-plot the main effect of group, using the levels
-  ##argument to re-arrange/rename levels of group
-  group_plot = ezPlot(
-    data = ANT[ANT$error==0,]
-    , dv = .(rt)
-    , wid = .(subnum)
-    , between = .(group)
-    , x = .(group)
-    , do_lines = FALSE
-    , x_lab = 'Group'
-    , y_lab = 'RT (ms)'
-    , levels = list(
-      group = list(
-        new_order = c('Treatment','Control')
-        , new_names = c('Treatment\nGroup','Control\nGroup')
-      )
-    )
-  )
-  #Show the plot.
-  print(group_plot)
-  
-  
-  #barplot where x is the independent on the x-axis, y is the 
-  #dependent on the y-axis and z is the independent given by 
-  #different colored bars
-  anova.plot<-function(x, y, z, ylab="y", xlab="x", 
-                       ylim=c(0, max(xx)+max(yy)), length=0.05){
-    
-    #height of the bars
-    xx<-tapply(y,list(z,x),mean)
-    
-    #standard deviation
-    yy<-tapply(y,list(z,x),sd)
-    
-    #number of replicates
-    zz<-tapply(y,list(z,x),length)
-    
-    #standard error
-    er<-yy/sqrt(zz)
-    
-    #number of colors for bars
-    w<-length(levels(z))
-    
-    #simple barplot without the errorbars
-    barx<-barplot(xx, col=c(1:w), beside=T, ylab=ylab, xlab=xlab, 
-                  ylim=ylim,xpd=FALSE)
-    
-    #box around the plot
-    box()
-    
-    #error bars
-    arrows(barx,xx+er, barx, xx, angle=90, code=1, length=length)
-    
-    #legend (after making the plot, indicate where the legend has 
-    #to come with the mouse)
-    legend(locator(1),c(levels(z)),fill=c(1:w),bty="n",cex=0.8)
-  }
-  
-  data <- data.frame(Olfactory_Bulb = NA, OlfactoryEp_Total = NA, Olfactory_resp = NA,
-                     functional_nonfunctional = c(rnorm(5, 10, 5), rnorm(11, 20, 5), rnorm(3, 30, 5),rnorm(1, 40, 5)),habitat = c(rep(1,5), rep(2,11), rep(3,3), rep(4,1)))
-  
-  rownames(data) <- c("Anoura_aequatoris", "Anoura_cadenai", "Anoura_canishina", "Anoura_caudifera", "Anoura_cultrata", "Anoura_fistulata", "Anoura_geoffroyi", "Anoura_latidens", "Anoura_luismanueli", "Anoura_peruana", "Choeroniscus_godmani", "Choeroniscus_periosus", "Choeroniscus_minor", "Choeronycteris_mexicana", "Glossophaga_commissarisi", "Glossophaga_leachii", "Glossophaga_longirostris", "Glossophaga_morenoi", "Glossophaga_soricina", "Hylonycteris underwoodi")
-  
-  library("plyr")
-  
-  library("ggplot2")
-  
-  graph_summary <- ddply(data, c("habitat"), summarize,
-                         AVERAGE=mean(functional_nonfunctional),
-                         SE=sqrt(var(functional_nonfunctional)/length(functional_nonfunctional)))
-  
-  ggplot(data = graph_summary, aes(x = habitat, y = AVERAGE, colour = habitat))+
-    geom_point()+
-    geom_errorbar(aes(ymax=AVERAGE+SE, ymin=AVERAGE-SE))+
-    theme(axis.text.x = element_text(angle = 90, hjust = 0, size=11),
-          axis.title.x = element_text(size=14),
-          axis.title.y = element_text(angle = 90, size=14))+
-    scale_x_discrete("Habitat")+
-    scale_y_continuous("Functional/Nonfunctional")
-  
-  
-  mm = tapply(unf_all$value, list(unf_all$conf, unf_all$ims), mean)
-  graph1 = barplot(mm, beside=T, legend=T)
-  
+# aggregating data
+fam_all <- melt(fam_all,id="subnum")
+fam_L <- melt(fam_L,id="subnum")
+unf_all <- melt(unf_all,id="subnum")
+unf_L <- melt(unf_L,id="subnum")
+fam_all$conf <- substr(fam_all$variable,13,16)
+fam_L$conf <- substr(fam_L$variable,13,16)
+unf_all$conf <- substr(unf_all$variable,13,16)
+unf_L$conf <- substr(unf_L$variable,13,16)
+for (i in 1:nrow(fam_all)){
+  a <- nchar(as.character(fam_all$variable[i]))-3
+  b <- nchar(as.character(fam_all$variable[i]))
+fam_all$ims[i] <- substr(fam_all$variable[i],a,b)
+fam_L$ims[i] <- substr(fam_L$variable[i],a,b)
+}
+for (i in 1:nrow(unf_all)){
+  a <- nchar(as.character(unf_all$variable[i]))-3
+  b <- nchar(as.character(unf_all$variable[i]))
+  unf_all$ims[i] <- substr(unf_all$variable[i],a,b)
+  unf_L$ims[i] <- substr(unf_L$variable[i],a,b)
+}
+unf_L$conf <- gsub("hap_", "happ", unf_L$conf)
+unf_all$conf <- gsub("hap_", "happ", unf_all$conf)
+fam_L$conf <- gsub("hap_", "happ", fam_L$conf)
+fam_all$conf <- gsub("hap_", "happ", fam_all$conf)
+
+# Anova
+##installing necessary packages
+#install.packages("ez")
+#install.packages("lsr")
+#loading required libraries
+library(ez)
+library(lsr)
+
+
+################################
+### REPEATED MEASURES ANOVAS ###
+################################
+#ANOVAs that include repeated measures factors
+mixed_anova_fam_all <- ezANOVA(data = fam_all,                
+                       dv = value,                
+                       wid = subnum,           
+                       #between = group,        
+                       within = .(conf, ims),    #within subjects variables to include in the model         
+                       detailed = T) 
+print(mixed_anova_fam_all)
+mixed_anova_fam_L <- ezANOVA(data = fam_L,                
+                       dv = value,                
+                       wid = subnum,           
+                       #between = group,        
+                       within = .(conf, ims),    #within subjects variables to include in the model         
+                       detailed = T) 
+print(mixed_anova_fam_L)
+mixed_anova_unf_all <- ezANOVA(data = unf_all,                
+                       dv = value,                
+                       wid = subnum,           
+                       #between = group,        
+                       within = .(conf, ims),    #within subjects variables to include in the model         
+                       detailed = T) 
+print(mixed_anova_unf_all)
+mixed_anova_unf_L <- ezANOVA(data = unf_L,                
+                       dv = value,                
+                       wid = subnum,           
+                       #between = group,        
+                       within = .(conf, ims),    #within subjects variables to include in the model         
+                       detailed = T) 
+print(mixed_anova_unf_L)
+par(mfrow=c(2,2))
+boxplot(value~conf*ims, data=unf_all, 
+        col=(c("gold","darkgreen")), 
+        xaxt = "n", 
+        main="Unfamiliar faces - all channels", xlab="Face space and emotion type", ylab="Objective reconstruction accuracy")
+axis(1, at=1:4, labels=c("h space-h ims","n space - h ims","h space - n ims","n space-n ims"))
+boxplot(value~conf*ims, data=unf_L, 
+        col=(c("gold","darkgreen")), 
+        xaxt = "n", 
+        main="Unfamiliar faces - L channel", xlab="Face space and emotion type", ylab="Objective reconstruction accuracy")
+axis(1, at=1:4, labels=c("h space-h ims","n space - h ims","h space - n ims","n space-n ims"))
+boxplot(value~conf*ims, data=fam_all, 
+        col=(c("gold","darkgreen")), 
+        xaxt = "n", 
+        main="Famous faces - all channels", xlab="Face space and emotion type", ylab="Objective reconstruction accuracy")
+axis(1, at=1:4, labels=c("h space-h ims","n space - h ims","h space - n ims","n space-n ims"))
+boxplot(value~conf*ims, data=fam_L, 
+        col=(c("gold","darkgreen")), 
+        xaxt = "n", 
+        main="Famous faces - L channel", xlab="Face space and emotion type", ylab="Objective reconstruction accuracy")
+axis(1, at=1:4, labels=c("h space h ims","n space - h ims","h space - n ims","n space-n ims"))
+
+par(mfrow=c(2,2))
+mm = tapply(unf_all$value, list(unf_all$conf, unf_all$ims), mean)
+graph1 = barplot(mm, beside=T, legend=T)
+graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
+                 main="Search Task Errors", xlab="hours of food deprivation",
+                 ylab="mean number of errors", legend =T, axis.lty=1,
+                 col=c("darkseagreen4","deepskyblue4"))
+superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...)
+  arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
+         length = length, ...)
+temp=c(0.1,0.22,0.3,0.4)
+superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
