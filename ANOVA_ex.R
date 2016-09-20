@@ -1,4 +1,6 @@
 rm(list=ls())
+install.packages("reshape")
+library(reshape)
 fam=read.csv("/Users/dannem/Dropbox/Data/IO_statistics/fam_IO_obj_test.csv")
 fam_all <- fam[,1:4]
 fam_L <- fam[,5:8]
@@ -41,7 +43,27 @@ unf_L$conf <- gsub("hap_", "happ", unf_L$conf)
 unf_all$conf <- gsub("hap_", "happ", unf_all$conf)
 fam_L$conf <- gsub("hap_", "happ", fam_L$conf)
 fam_all$conf <- gsub("hap_", "happ", fam_all$conf)
+unf_all$type <- ifelse((unf_all$conf == "happ") & 
+                         (unf_all$ims == "happ"), "within",
+                       ifelse((unf_all$conf=="neut") & 
+                                (unf_all$ims=="neut"), "within","between"))
+unf_L$type <- ifelse((unf_L$conf == "happ") & 
+                         (unf_L$ims == "happ"), "within",
+                       ifelse((unf_L$conf=="neut") & 
+                                (unf_L$ims=="neut"), "within","between"))
+fam_all$type <- ifelse((fam_all$conf == "happ") & 
+                         (fam_all$ims == "happ"), "within",
+                       ifelse((fam_all$conf=="neut") & 
+                                (fam_all$ims=="neut"), "within","between"))   
 
+fam_L$type <- ifelse((fam_L$conf == "happ") & 
+                         (fam_L$ims == "happ"), "within",
+                       ifelse((fam_L$conf=="neut") & 
+                                (fam_L$ims=="neut"), "within","between"))          
+levels(unf_all$conf)=c("neut","happ") # changing default levels, so the baseline is neutral
+levels(unf_L$conf)=c("neut","happ")
+levels(fam_all$conf)=c("neut","happ")
+levels(fam_L$conf)=c("neut","happ")
 # Anova
 ##installing necessary packages
 #install.packages("ez")
@@ -106,15 +128,16 @@ boxplot(value~conf*ims, data=fam_L,
 axis(1, at=1:4, labels=c("h space h ims","n space - h ims","h space - n ims","n space-n ims"))
 
 par(mfrow=c(2,2))
-mm = tapply(unf_all$value, list(unf_all$conf, unf_all$ims), mean)
-graph1 = barplot(mm, beside=T, legend=T)
+mm = tapply(unf_all$value, list(unf_all$type, unf_all$conf), mean)
 graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
                  main="Search Task Errors", xlab="hours of food deprivation",
-                 ylab="mean number of errors", legend =T, axis.lty=1,
+                 ylab="mean number of errors", legend =T, axis.lty=0.8,
                  col=c("darkseagreen4","deepskyblue4"))
 superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...){
   arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
          length = length, ...)
 }
-temp=c(0.1,0.22,0.3,0.4)
+sd_unf_all = tapply(unf_all$value, list(unf_all$conf, unf_all$type), sd)
+temp=sd_unf_all
 superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
+
