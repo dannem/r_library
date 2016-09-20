@@ -112,8 +112,9 @@ graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
                  main="Search Task Errors", xlab="hours of food deprivation",
                  ylab="mean number of errors", legend =T, axis.lty=1,
                  col=c("darkseagreen4","deepskyblue4"))
-superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...)
+superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...){
   arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
          length = length, ...)
+}
 temp=c(0.1,0.22,0.3,0.4)
 superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
