@@ -128,10 +128,15 @@ boxplot(value~conf*ims, data=fam_L,
 axis(1, at=1:4, labels=c("h space h ims","n space - h ims","h space - n ims","n space-n ims"))
 
 par(mfrow=c(2,2))
+# unfamiliar all
 mm = tapply(unf_all$value, list(unf_all$type, unf_all$conf), mean)
 graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
-                 main="Search Task Errors", xlab="hours of food deprivation",
-                 ylab="mean number of errors", legend =T, axis.lty=0.8,
+                 main="Unfamiliar - all channels", xlab="Face space expression",
+                 ylab="Reconstruction accuracy", 
+                 legend.text=TRUE,
+                 args.legend=list(
+                  x = "topright", bty = "n"),
+                 axis.lty=0.8,
                  col=c("darkseagreen4","deepskyblue4"))
 superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...){
   arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
@@ -141,3 +146,56 @@ sd_unf_all = tapply(unf_all$value, list(unf_all$conf, unf_all$type), sd)
 temp=sd_unf_all
 superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
 
+# unfamiliar L
+mm = tapply(unf_L$value, list(unf_L$type, unf_L$conf), mean)
+graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
+                 main="Unfamiliar - L channel", xlab="Face space expression",
+                 ylab="Reconstruction accuracy", 
+                 legend.text=TRUE,
+                 args.legend=list(
+                   x = "topright", bty = "n"),
+                 axis.lty=0.8,
+                 col=c("darkseagreen4","deepskyblue4"))
+superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...){
+  arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
+         length = length, ...)
+}
+sd_unf_L = tapply(unf_L$value, list(unf_L$conf, unf_L$type), sd)
+temp=sd_unf_L
+superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
+
+# famous all
+mm = tapply(fam_all$value, list(fam_all$type, fam_all$conf), mean)
+graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
+                 main="Famous - all channels", xlab="Face space expression",
+                 ylab="Reconstruction accuracy", 
+                 legend.text=TRUE,
+                 args.legend=list(
+                   x = "topright", bty = "n"),
+                 axis.lty=0.8,
+                 col=c("darkseagreen4","deepskyblue4"))
+superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...){
+  arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
+         length = length, ...)
+}
+sd_fam_all = tapply(fam_all$value, list(fam_all$conf, fam_all$type), sd)
+temp=sd_fam_all
+superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
+
+# famous L
+mm = tapply(fam_L$value, list(fam_L$type, fam_L$conf), mean)
+graph2 = barplot(mm, beside=T, ylim=c(0,1.3), space=c(.1,.8),
+                 main="Famous - L channel", xlab="Face space expression",
+                 ylab="Reconstruction accuracy", 
+                 legend.text=TRUE,
+                 args.legend=list(
+                   x = "topright", bty = "n"),
+                 axis.lty=0.8,
+                 col=c("darkseagreen4","deepskyblue4"))
+superpose.eb = function (x, y, ebl, ebu = ebl, length = 0.08, ...){
+  arrows(x, y + ebu, x, y - ebl, angle = 90, code = 3,
+         length = length, ...)
+}
+sd_fam_L = tapply(fam_L$value, list(fam_L$conf, fam_L$type), sd)
+temp=sd_fam_L
+superpose.eb(x=graph2, y=mm, ebl=temp, col="black", lwd=2)
